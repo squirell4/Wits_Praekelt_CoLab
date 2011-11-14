@@ -1,0 +1,155 @@
+﻿Level 1
+
+1.) Which is bigger?
+
+A: 100 ÷ 4
+B: 3 × 9
+
+2.) Which is smaller?
+
+A: 100 ÷ 25
+B: 30 ÷ 5
+
+3.) Which is bigger?
+
+A: 5y
+B: 3y
+
+4.) Which is smaller?
+
+A: xy
+B: y + x
+
+5.) Which is bigger?
+
+A: y + 4
+B: y + 5
+
+6.) Which is smaller?
+
+A: 100 - 25
+B: 25 × 5
+
+7.) Which is bigger?
+
+A: 6 + 17
+B: 20 + 2
+
+8.) Which is smaller?
+
+A: 7 × 7
+B: 5 × 10
+
+9.) Which is bigger?
+
+A: 28 ÷ 4
+B: 8 × 1
+
+10.) Which is smaller?
+
+A: 63 ÷ 9
+B: 81 - 72
+
+Level 2
+
+1.) Each angle of an equilateral triangle?
+
+A: 30º
+B: 60º
+
+2.)A straight line?
+
+A: 180º
+B: 160º
+
+3.) Full resolution?
+
+A: 300º
+B: 360º
+
+4.) Perpendicular?
+
+A: 85º
+B: 90º
+
+5.) Acute angle?
+
+A: 30º
+B: 200º
+
+6.) Obtuse angle?
+
+A: 25º
+B:187º
+
+7.)Two equal angles of Isometric triangle?
+
+A: 30º
+B: 20º
+
+8.) 240º - 60º = ?
+
+A: Straight Line
+B: Perpendicular angle
+
+9.) 180º - 90º = ?
+
+A: Straight Line
+B: Perpendicular angle
+
+10.) Angles of a Rectangle?
+
+A: 60º
+B: 90º
+
+Level 3
+
+1.) If y = 3 ?
+
+A: 3y = 9
+B: 3y = 12
+
+2.)If y = 6?
+
+A: y + 2y =16
+B: y + 2y =18
+
+3.) If y = 30?
+
+A: 2y - 16 = 54
+B: 4y -2 = 118
+
+4.) if y = 20?
+
+A: 2y × 20 = 800
+B: 2y × 20 = 400
+
+5.)If y = -4?
+
+A: y - y = -8
+B: y - y = 0
+
+6.) if y = - 2?
+
+A: y + y = 4
+B: y + y = - 4
+
+7.)If y = 2x?
+
+A: 3y = 6x
+B: 4y = 9x
+
+8.) If y = 5x?
+
+A: y + 3 = 8x
+B: y + 3 = 5x + 3
+
+9.) If y = 9x?
+
+A: 3y = 12x
+B: 3y = 27x
+
+10.) If y = x?
+
+A: 2y + 5 = 7x
+B: 2y + 5 = 2x + 5

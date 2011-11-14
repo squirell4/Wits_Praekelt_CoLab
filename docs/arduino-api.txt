@@ -1,0 +1,32 @@
+﻿
+Round 1
+Character = LED Light //explanation
+0=All Off //if someone signs out
+1=Blue LED1 ON //Someone Logs in as Blue
+2=Red LED1 ON //Someone Logs in as Red
+3=Green LED1 ON //Someone Logs in as Green
+4=Pink LED1 ON //Someone Logs in as Pink
+
+ Through to Round 2
+5=Blue LED2 ON //Blue is through to Round2
+6=Red LED2 ON //Red is through to Round2
+7=Green LED2 ON //Green is through to Round2
+8=Pink LED2 ON //Pink is through to Round2
+
+ Through to Round 3
+9=Blue LED2 ON //Blue is through to Round2
+x=Red LED2 ON //Red is through to Round2
+y=Green LED2 ON //Green is through to Round2
+z=Pink LED2 ON //Pink is through to Round2
+
+ultimate Winner/Enlightened One
+m=Blue Flash ON //Blue has WON.
+n=Red LED2 ON //Red has WON.
+o=Green LED2 ON //Green has WON.
+p=Pink LED2 ON //Pink has WON.
+
+Eliminated at any point
+a=Blue LED1,2,3 OFF //Blue is eliminated
+b=Red LED1,2,3 OFF //Red is eliminated
+c=Green LED1,2,3 OFF //Green is eliminated
+d=Pink LED1,2,3 OFF //Pink is eliminated
