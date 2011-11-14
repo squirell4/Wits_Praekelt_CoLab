@@ -1,2 +1,3 @@
 *.pyc
+/wpcolab/wpcolab.db
 /ve/*
