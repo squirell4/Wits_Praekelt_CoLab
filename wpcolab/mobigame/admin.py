@@ -2,7 +2,7 @@ from mobigame.models import Level, Question, Answer
 from django.contrib import admin
 
 
-class AnswerInline(admin.StackedInline):
+class AnswerInline(admin.TabularInline):
     model = Answer
     extra = 2
 
