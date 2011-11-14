@@ -9,6 +9,8 @@ class AnswerInline(admin.TabularInline):
 
 class QuestionAdmin(admin.ModelAdmin):
     inlines = [AnswerInline]
+    list_display = ['text', 'level']
+    search_fields = ['text']
 
 
 admin.site.register(Level)
