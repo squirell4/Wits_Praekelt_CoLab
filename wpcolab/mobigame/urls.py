@@ -8,6 +8,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^^$', views.index, name='index'),
     url(r'^login/', views.login, name='login'),
-    url(r'^colour/', views.select_colour, name='select_colour'),
-    url(r'^play/', views.play, name='play'),
+    url(r'^signout/', views.signout, name='signout'),
+    url(r'^findafriend/', views.findafriend, name='findafriend'),
+    url(r'^getready/', views.getready, name='getready'),
     )
