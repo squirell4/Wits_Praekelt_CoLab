@@ -1,4 +1,4 @@
-from mobigame.models import Level, Question, Answer
+from mobigame.models import Level, Question, Answer, Game
 from django.contrib import admin
 
 
@@ -15,3 +15,4 @@ class QuestionAdmin(admin.ModelAdmin):
 
 admin.site.register(Level)
 admin.site.register(Question, QuestionAdmin)
+admin.site.register(Game)
