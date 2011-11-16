@@ -75,6 +75,7 @@ def signout(request):
 def gamefull(request):
     context = {}
     return render(request, 'gamefull.html', context)
+    # TODO: implement
 
 
 def findafriend(request):
@@ -91,5 +92,15 @@ def findafriend(request):
 
 
 def getready(request):
-    context = {}
+    player = request.session.get('player')
+    if player is None:
+        redirect('mobigame:login')
+    context = {
+        'player': player,
+        }
     return render(request, 'getready.html', context)
+
+
+def play(request):
+    context = {}
+    return render(request, 'play.html', context)

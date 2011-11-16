@@ -11,4 +11,5 @@ urlpatterns = patterns('',
     url(r'^signout/', views.signout, name='signout'),
     url(r'^findafriend/', views.findafriend, name='findafriend'),
     url(r'^getready/', views.getready, name='getready'),
+    url(r'^play/', views.play, name='play'),
     )
