@@ -30,14 +30,14 @@ def first_colour_style(game=None):
 
 def index(request):
     game = Game.current_game()
-    if game.player_set.count() < 4:
+    if not game.full():
         return redirect('mobigame:login')
     redirect('mobigame:gamefull')
 
 
 def login(request):
     game = Game.current_game()
-    if game.player_set.count() >= 4:
+    if game.full():
         return redirect('mobigame:gamefull')
 
     if request.method == 'POST':
@@ -46,7 +46,7 @@ def login(request):
         if login_form.is_valid():
             player = login_form.save()
             request.session['player'] = player
-            if game.player_set.count() >= 4:
+            if game.full():
                 return redirect('mobigame:getready')
             return redirect('mobigame:findafriend')
     else:
@@ -60,8 +60,11 @@ def login(request):
 
 
 def signout(request):
-    login_form = LoginForm()
+    player = request.session.get('player')
+    if player is not None:
+        player.delete()
 
+    login_form = LoginForm()
     context = {
         'first_colour_style': first_colour_style(),
         'login_form': login_form,
@@ -78,6 +81,9 @@ def findafriend(request):
     player = request.session.get('player')
     if player is None:
         redirect('mobigame:login')
+    game = Game.current_game()
+    if game.full():
+        return redirect('mobigame:getready')
     context = {
         'player': player,
         }

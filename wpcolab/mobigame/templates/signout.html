@@ -11,6 +11,7 @@ ENLIGHTENED ONE
 
 <form action="/login/" method="POST">
 <div class="{{ first_colour_style }}">
+  {% csrf_token %}
   {{ login_form.as_p }}
   <br/>
   <input name="Submit" type="submit" id="Submit" value="Submit" />

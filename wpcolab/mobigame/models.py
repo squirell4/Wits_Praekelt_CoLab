@@ -49,6 +49,9 @@ class Game(models.Model):
         """Return colours still available for use in the game."""
         return set(Player.COLOUR_STYLES.keys()) - self.used_colours()
 
+    def full(self):
+        return (self.player_set.count() == 4)
+
 
 class Player(models.Model):
     COLOURS = [
@@ -65,3 +68,6 @@ class Player(models.Model):
     first_name = models.CharField(max_length=80)
     colour = models.CharField(max_length=10, choices=COLOUR_CHOICES)
     game = models.ForeignKey(Game)
+
+    def colour_style(self):
+        return self.COLOUR_STYLES[self.colour]
