@@ -1,0 +1,19 @@
+{% extends "base.html"%}
+
+{% block content %}
+<h2>Thank you ;)</h2>
+<p>
+Thanks for trying to play!<br/>
+Try a little later<br/>
+&amp; become the<br/>
+ENLIGHTENED ONE
+</p>
+
+<form action="/login/" method="POST">
+<div class="{{ first_colour_style }}">
+  {{ login_form.as_p }}
+  <br/>
+  <input name="Submit" type="submit" id="Submit" value="Submit" />
+</div>
+</form>
+{% endblock %}

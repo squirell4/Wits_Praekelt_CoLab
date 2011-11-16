@@ -7,17 +7,11 @@ Play the game by entering your name!<br/>
 Become the ENLIGHTENED ONE
 </p>
 
-<form action="">
+<form action="/login/" method="POST">
 <div class="{{ first_colour_style }}">
-User name: <br/>
-<input type="text" name="firstname" value="" /><br/><br/>
-
-{% for colour, desc in colour_options %}
-<input name="answer" type="radio" value="{{ colour }}" />{{ desc }}<br/>
-{% endfor %}
-
-<br/>
-<input name="Submit" type="submit" id="Submit" value="Submit" />
+  {% csrf_token %}
+  {{ login_form.as_p }}
+  <input name="Submit" type="submit" id="Submit" value="Submit" />
 </div>
 </form>
 {% endblock %}
