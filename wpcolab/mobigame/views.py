@@ -45,6 +45,7 @@ def login(request):
         login_form = LoginForm(request.POST, instance=player)
         if login_form.is_valid():
             player = login_form.save()
+            request.session['player'] = player
             if game.player_set.count() >= 4:
                 return redirect('mobigame:getready')
             return redirect('mobigame:findafriend')
@@ -74,7 +75,12 @@ def gamefull(request):
 
 
 def findafriend(request):
-    context = {}
+    player = request.session.get('player')
+    if player is None:
+        redirect('mobigame:login')
+    context = {
+        'player': player,
+        }
     return render(request, 'findafriend.html', context)
 
 
