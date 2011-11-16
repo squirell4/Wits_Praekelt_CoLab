@@ -4,8 +4,7 @@ from django.core.validators import MinValueValidator
 
 class Level(models.Model):
     """Round of play. Higher levels are more difficult."""
-    levelno = models.IntegerField(primary_key=True,
-                                validators=[MinValueValidator(1)])
+    levelno = models.IntegerField(validators=[MinValueValidator(1)])
 
     def __unicode__(self):
         return u"Level %d" % self.levelno
@@ -37,10 +36,10 @@ class Game(models.Model):
     @classmethod
     def current_game(cls):
         """Return the currently active (incomplete) game or create one."""
-        uncompleted = list(cls.objects.filter(complete=False).order_by('pk'))
-        if not uncompleted:
-            uncompleted = [cls.objects.create(complete=False, level=None)]
-        return uncompleted[0]
+        uncompleted = cls.objects.filter(complete=False).order_by('pk')
+        if uncompleted.exists():
+            return uncompleted[0]
+        return cls.objects.create(complete=False, level=None)
 
     def used_colours(self):
         """Return colours already used by players in the game."""
