@@ -102,6 +102,7 @@ def getready(request):
 
 
 def play(request):
+    # TODO: handler submit
     player = request.session.get('player')
     if player is None:
         redirect('mobigame:login')
@@ -116,3 +117,29 @@ def play(request):
         'answer2': answer2,
         }
     return render(request, 'play.html', context)
+
+
+ELIMINATION_MSGS = [
+    'The tribe has spoken!',
+    'You are the weakest link...',
+    'K.O.',
+    ]
+
+
+def eliminated(request):
+    context = {}
+    # or render second.html
+    return render(request, 'eliminated.html', context)
+
+
+WINNING_MSG = {
+    'blue': "That flashing blue light aint the Cops -- It's You!",
+    'red': "Red is Dynamite! Go set off some fireworks!",
+    'green': "You're a mean green maths machine! Look at You!",
+    'pink': "You've Proved Pink is not for Sissies!",
+    }
+
+
+def winner(request):
+    context = {}
+    return render(request, 'winner.html', context)

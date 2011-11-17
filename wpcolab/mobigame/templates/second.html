@@ -1,0 +1,27 @@
+{% extends "base.html"%}
+
+{% block content %}
+
+<h2>:'(<h2>
+<br/>
+Not the brightest bulb<br/>
+in the room?<br/>
+<br/>
+Second Best aint bad.
+
+<p>
+Try again, to knock off<br/>
+the enlightened one.
+</p>
+
+<div class="{{ player.colour_style }}">{{ player.colour|titlecase }}: {{ player.first_name|upper }}
+<br/>
+<br/>
+<a href="/scores/"><button type="button">Enlighted Ones</button></a><br/>
+See a list of<br/>
+the enlightened<br/>
+<br/>
+<br/>
+</div>
+
+{% endblock %}
