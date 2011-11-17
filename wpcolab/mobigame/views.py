@@ -102,5 +102,17 @@ def getready(request):
 
 
 def play(request):
-    context = {}
+    player = request.session.get('player')
+    if player is None:
+        redirect('mobigame:login')
+    game = Game.current_game()
+    question = game.question()
+    [answer1, answer2] = question.answer_set.all()
+    context = {
+        'game': game,
+        'player': player,
+        'question': question,
+        'answer1': answer1,
+        'answer2': answer2,
+        }
     return render(request, 'play.html', context)

@@ -52,6 +52,11 @@ class Game(models.Model):
     def full(self):
         return (self.player_set.count() == 4)
 
+    def get_question(self):
+        assert self.level is not None
+        [question] = self.level.question_set.order_by('?')[:1]
+        return question
+
 
 class Player(models.Model):
     COLOURS = [

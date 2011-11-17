@@ -1,0 +1,19 @@
+{% extends "base.html"%}
+
+{% block content %}
+<h2>ROUND {{ game.level.levelno }}</h2>
+<p>Select & sumbit the correct ANSWER</p>
+<div id="{{ player.colour_style }}">Question: {{ question }}</div>
+
+<form action="/play/" method="POST">
+<div id="{{ player.colour_style }}">
+<input name="answer" type="radio" value="{{ answer1.pk }}" />A: {{ answer1.text }}<br />
+<br/>
+OR<br/>
+<br/>
+<input type="radio" name="answer" value="{{ answer2.pk }}" />B: {{ answer2.text }}<br />
+</div>
+
+<div id="colorBar1"><input type="submit" value="Submit" /></div>
+</form>
+{% endblock %}
