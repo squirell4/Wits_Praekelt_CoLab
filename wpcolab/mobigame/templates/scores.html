@@ -4,7 +4,7 @@
 <h1>{{ player.first_name|titlecase }} ;)</h1>
 <h3>Current Enlightened One!</h3>
 
-<div id="{{ colour_style }}">
+<div class="{{ colour_style }}">
 <br/>
 other ENLIGHTENED ONES:<br/>
 _ <br/>
@@ -13,6 +13,6 @@ _<br/>
 _<br/>
 _<br/>
 <br/>
-<a href="/login/"><button type="button">Play!</button></a>
+<a href="{% url mobigame:login %}"><button type="button">Play!</button></a>
 </div>
 {% endblock %}

@@ -5,15 +5,15 @@
 <h3>{{ elimination_msg }}</h3>
 <p>You have Been ELIMINATED!</p>
 
-<div id="{{ player.colour_style }}">LEVEL#{{ game.level.levelno }}<br/>
+<div class="{{ player.colour_style }}">LEVEL#{{ game.level.levelno }}<br/>
 <br/>
 {{ player.first_name }}<br/>
 <br/>
 
-<a href="/scores/"><button type="button">Enlighted Ones</button></a><br/>
+<a href="{% url mobigame:scores %}"><button type="button">Enlighted Ones</button></a><br/>
 <br/>
 <br/>
-<a href="/signout/"><button type="button">Sign Out</button></a>
+<a href="{% url mobigame:signout %}"><button type="button">Sign Out</button></a>
 </div>
 
 {% endblock %}
