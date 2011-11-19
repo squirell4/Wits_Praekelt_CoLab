@@ -1,5 +1,6 @@
 *.pyc
 /wpcolab/wpcolab.db
+/wpcolab/production_settings.py
 /ve/*
 /wpcolab/tmp/*
 /wpcolab/logs/*
