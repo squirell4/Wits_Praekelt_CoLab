@@ -1,0 +1,7 @@
+Django>=1.3
+django-nose
+supervisor
+South==0.7.3
+gunicorn
+psycopg2==2.4
+django-sentry
