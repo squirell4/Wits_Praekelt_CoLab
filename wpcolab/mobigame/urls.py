@@ -14,4 +14,5 @@ urlpatterns = patterns('',
     url(r'^play/', views.play, name='play'),
     url(r'^eliminated/', views.eliminated, name='eliminated'),
     url(r'^winner/', views.winner, name='winner'),
+    url(r'^api/v1/', views.api_v1, name='apiv1'),
     )

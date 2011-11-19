@@ -3,6 +3,7 @@
 from django.shortcuts import redirect, render
 from django.forms import ModelForm
 from django.core.exceptions import ValidationError
+from django.http import HttpResponse
 
 from mobigame.models import Game, Player
 
@@ -143,3 +144,20 @@ WINNING_MSG = {
 def winner(request):
     context = {}
     return render(request, 'winner.html', context)
+
+
+def plain_text(f):
+    def wrapper(request):
+        text = f(request)
+        return HttpResponse(text, mimetype="text/plain")
+    return wrapper
+
+
+@plain_text
+def api_v1(request):
+    game = Game.current_game()
+    if game.level is None:
+        return "0"
+    elif game.level.levelno == 1:
+        return "1234"
+    return "5"
