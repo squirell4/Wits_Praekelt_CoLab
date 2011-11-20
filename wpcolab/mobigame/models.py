@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 from django.core.validators import MinValueValidator
 
@@ -49,16 +51,29 @@ class Player(models.Model):
 
 class Game(models.Model):
     """A model of game state."""
+
+    MAX_AGE = datetime.timedelta(seconds=60)
+
     complete = models.BooleanField()
     players = models.ManyToManyField(Player)
+    last_access = models.DateTimeField()
 
     @classmethod
     def current_game(cls):
         """Return the currently active (incomplete) game or create one."""
         uncompleted = cls.objects.filter(complete=False).order_by('pk')
         if uncompleted.exists():
-            return uncompleted[0]
+            current = uncompleted[0]
+            if datetime.datetime.now() - current.last_access > cls.MAX_AGE:
+                current.completed = True
+                current.save()
+            else:
+                return current
         return cls.objects.create(complete=False, level=None)
+
+    def touch(self):
+        self.last_access = datetime.datetime.now()
+        self.save()
 
     def used_colours(self):
         """Return colours already used by players in the game."""

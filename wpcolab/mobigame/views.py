@@ -34,6 +34,7 @@ def game_in_progress(view):
         if player not in game.player_set:
             del request.session['player']
             return redirect('mobigame:login')
+        game.touch()
         return view(game, player, request)
     wrapper.__name__ = view.__name__
     wrapper.__doc__ = view.__doc__
