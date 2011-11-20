@@ -15,13 +15,6 @@ class LoginForm(ModelForm):
         model = Player
         fields = ('first_name', 'colour')
 
-    def clean(self):
-        super(LoginForm, self).clean()
-        if (self.cleaned_data['colour'] not in
-            self.instance.game.unused_colours()):
-            raise ValidationError("Colour already taken, sorry. :(")
-        return self.cleaned_data
-
 
 # View decorators
 
@@ -31,7 +24,7 @@ def game_in_progress(view):
         player = request.session.get('player')
         if player is None:
             return redirect('mobigame:login')
-        if player not in game.player_set:
+        if player not in game.players.all():
             del request.session['player']
             return redirect('mobigame:login')
         game.touch()
@@ -58,10 +51,10 @@ def login(request):
     game = Game.current_game()
 
     if request.method == 'POST':
-        player = Player(game=game)
-        login_form = LoginForm(request.POST, instance=player)
+        login_form = LoginForm(request.POST)
         if login_form.is_valid():
             player = login_form.save()
+            game.players.add(player)
             request.session['player'] = player
             return redirect('mobigame:play')
     else:

@@ -47,6 +47,9 @@ class Player(models.Model):
     first_name = models.CharField(max_length=80)
     colour = models.CharField(max_length=10, choices=COLOUR_CHOICES)
 
+    def __unicode__(self):
+        return u"Player %s (%s, %s)" % (self.pk, self.first_name, self.colour)
+
     def colour_style(self):
         return self.COLOUR_STYLES[self.colour]
 
@@ -60,18 +63,27 @@ class Game(models.Model):
     players = models.ManyToManyField(Player)
     last_access = models.DateTimeField()
 
+    def __unicode__(self):
+        return u"Game %s (complete: %s)" % (self.pk, self.complete)
+
     @classmethod
     def current_game(cls):
         """Return the currently active (incomplete) game or create one."""
-        uncompleted = cls.objects.filter(complete=False).order_by('pk')
-        if uncompleted.exists():
-            current = uncompleted[0]
-            if datetime.datetime.now() - current.last_access > cls.MAX_AGE:
+        uncompleted = list(cls.objects.filter(complete=False)\
+                           .order_by('last_access').all())
+        now = datetime.datetime.now()
+        # expire old games
+        for game in uncompleted[:-1]:
+            game.completed = True
+            game.save()
+        if uncompleted:
+            current = uncompleted[-1]
+            if now - current.last_access > cls.MAX_AGE:
                 current.completed = True
                 current.save()
             else:
                 return current
-        return cls.objects.create(complete=False, level=None)
+        return cls.objects.create(complete=False, last_access=now)
 
     def touch(self):
         self.last_access = datetime.datetime.now()
