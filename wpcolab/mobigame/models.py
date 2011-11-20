@@ -116,7 +116,6 @@ class GameState(object):
             self.data = json.loads(game.state)
         else:
             self.data = copy.deepcopy(self.GAME_STATE_START)
-        self.setdefaults()
 
     def __getitem__(self, name):
         return self.data[name]
@@ -227,14 +226,14 @@ class GameState(object):
         api_values = []
         for player_pk, player_state in self['players'].items():
             player = Player.objects.get(pk=int(player_pk))
-            player_idx = self.API_V1_ORDER.find(player.colour)
+            player_idx = self.API_V1_ORDER.index(player.colour)
             if player_state['eliminated']:
                 api_values.append(self.API_V1_ELIMINATED[player_idx])
                 continue
             if self.winner(player):
                 api_values.append(self.API_V1_WINNER[player_idx])
                 continue
-            for level in range(min(player_state['sync'],
+            for level in range(min((player_state['sync'] or 0) + 1,
                                    len(self.API_V1_LEVELS))):
                 api_values.append(self.API_V1_LEVELS[level][player_idx])
 

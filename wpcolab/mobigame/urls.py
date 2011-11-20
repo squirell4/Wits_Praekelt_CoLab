@@ -11,4 +11,5 @@ urlpatterns = patterns('',
     url(r'^signout/', views.signout, name='signout'),
     url(r'^scores/', views.scores, name='scores'),
     url(r'^play/', views.play, name='play'),
+    url(r'^api/v1/', views.api_v1, name='apiv1'),
     )
