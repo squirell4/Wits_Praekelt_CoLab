@@ -38,6 +38,8 @@ class Player(models.Model):
         ("pink", "Pink", "colorBarPink"),
         ]
 
+    NO_PLAYER_STYLE = "colorBarNoPlayer"
+
     COLOUR_STYLES = dict((colour, style) for colour, _desc, style in COLOURS)
     COLOUR_DISPLAY = dict((colour, desc) for colour, desc, _style in COLOURS)
     COLOUR_CHOICES = COLOUR_DISPLAY.items()

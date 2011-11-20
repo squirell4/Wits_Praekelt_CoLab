@@ -10,7 +10,7 @@ ENLIGHTENED ONE
 </p>
 
 <form action="{% url mobigame:login %}" method="POST">
-<div class="{{ first_colour_style }}">
+<div class="{{ colour_style }}">
   {% csrf_token %}
   {{ login_form.as_p }}
   <br/>

@@ -48,16 +48,6 @@ def plain_text(f):
     return wrapper
 
 
-# Helpers
-
-def first_colour_style(game=None):
-    """Retrieve the style of the first available colour."""
-    if game is None:
-        game = Game.current_game()
-    unused_colours = sorted(list(game.unused_colours()))
-    return Player.COLOUR_STYLES[unused_colours[0]]
-
-
 # Views
 
 def index(request):
@@ -78,7 +68,7 @@ def login(request):
         login_form = LoginForm()
 
     context = {
-        'first_colour_style': first_colour_style(game),
+        'colour_style': Player.NO_PLAYER_STYLE,
         'login_form': login_form,
         }
     return render(request, 'login.html', context)
@@ -91,7 +81,7 @@ def signout(request):
 
     login_form = LoginForm()
     context = {
-        'first_colour_style': first_colour_style(),
+        'colour_style': Player.NO_PLAYER_STYLE,
         'login_form': login_form,
         }
     return render(request, 'signout.html', context)
