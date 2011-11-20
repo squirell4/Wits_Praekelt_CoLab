@@ -104,10 +104,11 @@ class GameState(object):
         'level': 0,
         # players that successfully answered all rounds
         'winners': [],
+        # players that have been eliminated
+        'eliminated': [],
         }
     PLAYER_STATE_START = {
         'sync': None,  # last sync level
-        'eliminated': False,  # still in game
         'questions': {},
         }
 
@@ -129,6 +130,7 @@ class GameState(object):
 
     def save(self):
         self.game.state = json.dumps(self.data)
+        self.game.complete = len(self['eliminated']) == self.NUM_PLAYERS
         self.game.save()
 
     def add_player(self, player):
@@ -147,12 +149,13 @@ class GameState(object):
     def eliminate_player(self, player):
         """Remove player from game."""
         player_pk = self._pk(player)
-        self['players'][player_pk]['eliminated'] = True
+        if player_pk not in self['eliminated']:
+            self['eliminated'].append(player_pk)
 
     def eliminated(self, player):
         """Whether player is still in the game."""
         player_pk = self._pk(player)
-        return self['players'][player_pk]['eliminated']
+        return player_pk in self['eliminated']
 
     def second(self, player):
         return self['winners'][1:2] == [self._pk(player)]
@@ -228,7 +231,7 @@ class GameState(object):
         for player_pk, player_state in self['players'].items():
             player = Player.objects.get(pk=int(player_pk))
             player_idx = self.API_V1_ORDER.index(player.colour)
-            if player_state['eliminated']:
+            if player_pk in self['eliminated']:
                 api_values.append(self.API_V1_ELIMINATED[player_idx])
                 continue
             if self.winner(player):
