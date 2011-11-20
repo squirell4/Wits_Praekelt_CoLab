@@ -35,13 +35,6 @@ def game_in_progress(view):
     return wrapper
 
 
-def plain_text(f):
-    def wrapper(request):
-        text = f(request)
-        return HttpResponse(text, mimetype="text/plain")
-    return wrapper
-
-
 # Views
 
 def index(request):
@@ -159,11 +152,8 @@ def play(game, gamestate, player, request):
 
 # API
 
-@plain_text
 def api_v1(request):
     game = Game.current_game()
-    if game.level is None:
-        return "0"
-    elif game.level.levelno == 1:
-        return "1234"
-    return "5"
+    gamestate = game.get_state()
+    text = gamestate.api_v1_state()
+    return HttpResponse(text, mimetype="text/plain")

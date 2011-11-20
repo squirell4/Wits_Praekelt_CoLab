@@ -1,5 +1,6 @@
 import datetime
 import json
+import copy
 
 from django.db import models
 from django.core.validators import MinValueValidator
@@ -97,6 +98,12 @@ class Game(models.Model):
 class GameState(object):
 
     LAST_LEVEL = 3
+    GAME_STATE_START = {
+        'players': {},
+        'level': 0,
+        # players that successfully answered all rounds
+        'winners': [],
+        }
     PLAYER_STATE_START = {
         'sync': None,  # last sync level
         'eliminated': False,  # still in game
@@ -108,14 +115,8 @@ class GameState(object):
         if game.state:
             self.data = json.loads(game.state)
         else:
-            self.data = {}
+            self.data = copy.deepcopy(self.GAME_STATE_START)
         self.setdefaults()
-
-    def setdefaults(self):
-        self.data.setdefault('players', {})
-        self.data.setdefault('level', 0)
-        # players that successfully answered all rounds
-        self.data.setdefault('winners', [])
 
     def __getitem__(self, name):
         return self.data[name]
@@ -131,7 +132,7 @@ class GameState(object):
         self.game.save()
 
     def add_player(self, player):
-        defaults = self.PLAYER_STATE_START.copy()
+        defaults = copy.deepcopy(self.PLAYER_STATE_START)
         player_pk = self._pk(player)
         self['players'].setdefault(player_pk, defaults)
 
@@ -216,3 +217,27 @@ class GameState(object):
         player_syncs = [p['sync'] for p in self['players'].values()]
         level = self['level']
         return all(sync == level for sync in player_syncs)
+
+    API_V1_ORDER = ["blue", "red", "green", "pink"]
+    API_V1_ELIMINATED = ["abcd"]
+    API_V1_LEVELS = ["1234", "5678", "9xyz"]
+    API_V1_WINNER = ["mnop"]
+
+    def api_v1_state(self):
+        api_values = []
+        for player_pk, player_state in self['players'].items():
+            player = Player.objects.get(pk=int(player_pk))
+            player_idx = self.API_V1_ORDER.find(player.colour)
+            if player_state['eliminated']:
+                api_values.append(self.API_V1_ELIMINATED[player_idx])
+                continue
+            if self.winner(player):
+                api_values.append(self.API_V1_WINNER[player_idx])
+                continue
+            for level in range(min(player_state['sync'],
+                                   len(self.API_V1_LEVELS))):
+                api_values.append(self.API_V1_LEVELS[level][player_idx])
+
+        if not api_values:
+            return "0"
+        return "".join(sorted(api_values))
