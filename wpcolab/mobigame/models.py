@@ -1,4 +1,5 @@
 import datetime
+import json
 
 from django.db import models
 from django.core.validators import MinValueValidator
@@ -10,6 +11,9 @@ class Level(models.Model):
 
     def __unicode__(self):
         return u"Level %d" % self.levelno
+
+    def random_question(self):
+        return self.question_set.order_by('?')[0]
 
 
 class Question(models.Model):
@@ -60,8 +64,9 @@ class Game(models.Model):
     MAX_AGE = datetime.timedelta(seconds=60)
 
     complete = models.BooleanField()
-    players = models.ManyToManyField(Player)
-    last_access = models.DateTimeField()
+    last_access = models.DateTimeField(auto_now=True)
+    state = models.TextField()
+    winner = models.ForeignKey(Player, null=True)
 
     def __unicode__(self):
         return u"Game %s (complete: %s)" % (self.pk, self.complete)
@@ -85,25 +90,119 @@ class Game(models.Model):
                 return current
         return cls.objects.create(complete=False, last_access=now)
 
-    def touch(self):
-        self.last_access = datetime.datetime.now()
-        self.save()
+    def get_state(self):
+        return GameState(self)
 
-    def used_colours(self):
-        """Return colours already used by players in the game."""
-        return set([p.colour for p in self.players.all()])
 
-    def unused_colours(self):
-        """Return colours still available for use in the game."""
-        return set(Player.COLOUR_STYLES.keys()) - self.used_colours()
+class GameState(object):
+
+    PLAYER_STATE_START = {
+        'sync': None,  # last sync level
+        'eliminated': False,  # still in game
+        'questions': {},
+        }
+
+    def __init__(self, game):
+        self.game = game
+        self.data = json.loads(game.state)
+        self.setdefaults()
+
+    def setdefaults(self):
+        self.data.setdefault('players', {})
+        self.data.setdefault('level', 0)
+
+    def __getitem__(self, name):
+        return self.data[name]
+
+    def __setitem__(self, name, value):
+        self.data[name] = value
+
+    def _pk(self, obj):
+        return str(obj.pk)
+
+    def save(self):
+        self.game.state = json.dumps(self.data)
+        self.game.save()
+
+    def add_player(self, player):
+        defaults = self.PLAYER_STATE_START.copy()
+        player_pk = self._pk(player)
+        self['players'].setdefault(player_pk, defaults)
 
     def full(self):
-        return (self.players.count() == 4)
+        """Whether a full set of players have logged in."""
+        return len(self['players']) == 4
 
+    def player_exists(self, player):
+        player_pk = self._pk(player)
+        return player_pk in self['players']
 
-class GameAnswer(models.Model):
-    """An answers provided by a player in a game."""
-    game = models.ForeignKey(Game)
-    player = models.ForeignKey(Player)
-    question = models.ForeignKey(Question)
-    answer = models.ForeignKey(Answer, null=True)
+    def eliminate_player(self, player):
+        """Remove player from game."""
+        player_pk = self._pk(player)
+        self['players'][player_pk]['eliminated'] = True
+
+    def eliminated(self, player):
+        """Whether player is still in the game."""
+        player_pk = self._pk(player)
+        return self['players'][player_pk]['eliminated']
+
+    def second(self, player):
+        pass
+
+    def winner(self, player):
+        pass
+
+    def answer(self, player, answer_pk):
+        """Answer for the current question."""
+        player_state = self['players'][self._pk(player)]
+        questions = player_state['questions']
+        level_key = str(self['level'])
+        if level_key not in questions:
+            return
+        question_pk, existing_answer_pk = questions[level_key]
+        if existing_answer_pk is not None:
+            return
+
+        answer = Answer.objects.get(pk=answer_pk)
+        if answer.question.pk != question_pk:
+            return
+
+        questions[level_key] = [question_pk, answer_pk]
+        if not answer.correct:
+            self.eliminated(player)
+
+    def current_question(self, player):
+        """Return the question for the current level, creating one
+        if needed."""
+        player_state = self['players'][self._pk(player)]
+        questions = player_state['questions']
+        level_no = self['level']
+        level_key = str(level_no)
+        if level_key in questions:
+            question_pk, _answer_pk = questions[level_key]
+            question = Question.objects.get(pk=question_pk)
+        else:
+            level = Level.objects.get(levelno=level_no)
+            question = level.random_question()
+            questions[level_key] = [question.pk, None]
+        return question
+
+    def level_no(self):
+        """Current round. None if round 1 hasn't started."""
+        return self['level']
+
+    def sync_player(self, player):
+        """Sync player at current level. Once all players
+        have synced, the level increased."""
+        level = self['level']
+        player_state = self['players'][self._pk(player)]
+        if player_state['sync'] != level:
+            player_state['sync'] = level
+            if self.players_synced():
+                self['level'] = min(level + 1, 3)
+
+    def players_synced(self):
+        player_syncs = [p['sync'] for p in self['players'].values()]
+        level = self['level']
+        return all(sync == level for sync in player_syncs)
