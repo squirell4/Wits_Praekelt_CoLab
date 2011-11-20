@@ -8,6 +8,8 @@ from django.http import HttpResponse
 from mobigame.models import Game, Player
 
 
+# Forms
+
 class LoginForm(ModelForm):
     class Meta:
         model = Player
@@ -21,6 +23,32 @@ class LoginForm(ModelForm):
         return self.cleaned_data
 
 
+# View decorators
+
+def game_in_progress(view):
+    def wrapper(request):
+        game = Game.current_game()
+        player = request.session.get('player')
+        if player is None:
+            return redirect('mobigame:login')
+        if player not in game.player_set:
+            del request.session['player']
+            return redirect('mobigame:login')
+        return view(game, player, request)
+    wrapper.__name__ = view.__name__
+    wrapper.__doc__ = view.__doc__
+    return wrapper
+
+
+def plain_text(f):
+    def wrapper(request):
+        text = f(request)
+        return HttpResponse(text, mimetype="text/plain")
+    return wrapper
+
+
+# Helpers
+
 def first_colour_style(game=None):
     """Retrieve the style of the first available colour."""
     if game is None:
@@ -29,17 +57,14 @@ def first_colour_style(game=None):
     return Player.COLOUR_STYLES[unused_colours[0]]
 
 
+# Views
+
 def index(request):
-    game = Game.current_game()
-    if not game.full():
-        return redirect('mobigame:login')
-    redirect('mobigame:gamefull')
+    return redirect('mobigame:login')
 
 
 def login(request):
     game = Game.current_game()
-    if game.full():
-        return redirect('mobigame:gamefull')
 
     if request.method == 'POST':
         player = Player(game=game)
@@ -47,9 +72,7 @@ def login(request):
         if login_form.is_valid():
             player = login_form.save()
             request.session['player'] = player
-            if game.full():
-                return redirect('mobigame:getready')
-            return redirect('mobigame:findafriend')
+            return redirect('mobigame:play')
     else:
         login_form = LoginForm()
 
@@ -73,41 +96,14 @@ def signout(request):
     return render(request, 'signout.html', context)
 
 
-def gamefull(request):
+def scores(request):
     context = {}
-    return render(request, 'gamefull.html', context)
-    # TODO: implement
+    return render(request, 'scores.html', context)
 
 
-def findafriend(request):
-    player = request.session.get('player')
-    if player is None:
-        redirect('mobigame:login')
-    game = Game.current_game()
-    if game.full():
-        return redirect('mobigame:getready')
-    context = {
-        'player': player,
-        }
-    return render(request, 'findafriend.html', context)
-
-
-def getready(request):
-    player = request.session.get('player')
-    if player is None:
-        redirect('mobigame:login')
-    context = {
-        'player': player,
-        }
-    return render(request, 'getready.html', context)
-
-
-def play(request):
+@game_in_progress
+def play(game, player, request):
     # TODO: handler submit
-    player = request.session.get('player')
-    if player is None:
-        redirect('mobigame:login')
-    game = Game.current_game()
     question = game.question()
     [answer1, answer2] = question.answer_set.all()
     context = {
@@ -120,17 +116,19 @@ def play(request):
     return render(request, 'play.html', context)
 
 
+# play.html
+# madeit.html
+# return render(request, 'findafriend.html', context)
+# return render(request, 'getready.html', context)
+# return render(request, 'eliminated.html', context)
+# return render(request, 'winner.html', context)
+
+
 ELIMINATION_MSGS = [
     'The tribe has spoken!',
     'You are the weakest link...',
     'K.O.',
     ]
-
-
-def eliminated(request):
-    context = {}
-    # or render second.html
-    return render(request, 'eliminated.html', context)
 
 
 WINNING_MSG = {
@@ -139,18 +137,6 @@ WINNING_MSG = {
     'green': "You're a mean green maths machine! Look at You!",
     'pink': "You've Proved Pink is not for Sissies!",
     }
-
-
-def winner(request):
-    context = {}
-    return render(request, 'winner.html', context)
-
-
-def plain_text(f):
-    def wrapper(request):
-        text = f(request)
-        return HttpResponse(text, mimetype="text/plain")
-    return wrapper
 
 
 @plain_text
