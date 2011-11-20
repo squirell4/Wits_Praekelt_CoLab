@@ -96,6 +96,7 @@ class Game(models.Model):
 
 class GameState(object):
 
+    LAST_LEVEL = 3
     PLAYER_STATE_START = {
         'sync': None,  # last sync level
         'eliminated': False,  # still in game
@@ -110,6 +111,8 @@ class GameState(object):
     def setdefaults(self):
         self.data.setdefault('players', {})
         self.data.setdefault('level', 0)
+        # players that successfully answered all rounds
+        self.data.setdefault('winners', [])
 
     def __getitem__(self, name):
         return self.data[name]
@@ -148,16 +151,17 @@ class GameState(object):
         return self['players'][player_pk]['eliminated']
 
     def second(self, player):
-        pass
+        return self['winners'][1:2] == [self._pk(player)]
 
     def winner(self, player):
-        pass
+        return self['winners'][0:1] == [self._pk(player)]
 
     def answer(self, player, answer_pk):
         """Answer for the current question."""
         player_state = self['players'][self._pk(player)]
         questions = player_state['questions']
-        level_key = str(self['level'])
+        level_no = self['level']
+        level_key = str(level_no)
         if level_key not in questions:
             return
         question_pk, existing_answer_pk = questions[level_key]
@@ -170,7 +174,9 @@ class GameState(object):
 
         questions[level_key] = [question_pk, answer_pk]
         if not answer.correct:
-            self.eliminated(player)
+            self.eliminate_player(player)
+        elif level_no == self.LAST_LEVEL:
+            self['winners'].append(self._pk(player))
 
     def current_question(self, player):
         """Return the question for the current level, creating one
