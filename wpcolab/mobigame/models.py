@@ -177,6 +177,7 @@ class GameState(object):
             self.eliminate_player(player)
         elif level_no == self.LAST_LEVEL:
             self['winners'].append(self._pk(player))
+            self.eliminate_player(player)
 
     def current_question(self, player):
         """Return the question for the current level, creating one
