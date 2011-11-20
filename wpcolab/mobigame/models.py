@@ -98,6 +98,7 @@ class Game(models.Model):
 class GameState(object):
 
     LAST_LEVEL = 3
+    NUM_PLAYERS = 4
     GAME_STATE_START = {
         'players': {},
         'level': 0,
@@ -137,7 +138,7 @@ class GameState(object):
 
     def full(self):
         """Whether a full set of players have logged in."""
-        return len(self['players']) == 4
+        return len(self['players']) == self.NUM_PLAYERS
 
     def player_exists(self, player):
         player_pk = self._pk(player)
