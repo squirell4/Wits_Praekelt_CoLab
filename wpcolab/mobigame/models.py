@@ -105,7 +105,10 @@ class GameState(object):
 
     def __init__(self, game):
         self.game = game
-        self.data = json.loads(game.state)
+        if game.state:
+            self.data = json.loads(game.state)
+        else:
+            self.data = {}
         self.setdefaults()
 
     def setdefaults(self):

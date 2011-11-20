@@ -22,7 +22,7 @@ class LoginForm(ModelForm):
 def game_in_progress(view):
     def wrapper(request):
         game = Game.current_game()
-        gamestate = game.set_state()
+        gamestate = game.get_state()
         player = request.session.get('player')
         if player is None:
             return redirect('mobigame:login')
@@ -108,9 +108,10 @@ WINNING_MSGS = {
 
 
 @game_in_progress
-def play(game, gamestate, player, request, context):
+def play(game, gamestate, player, request):
     context = {
         'game': game,
+        'gamestate': gamestate,
         'player': player,
         }
 
@@ -133,7 +134,7 @@ def play(game, gamestate, player, request, context):
             template = 'madeit.html'
     else:
         if not gamestate.full():
-            template = 'findafriend'
+            template = 'findafriend.html'
         elif not gamestate.players_synced():
             gamestate.sync_player(player)
             if gamestate.level_no() is None:
