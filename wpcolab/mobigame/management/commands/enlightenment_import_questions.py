@@ -103,6 +103,7 @@ class FileParser(object):
         for question, answers in self.questions:
             question.save()
             for answer in answers:
+                answer.question = question
                 answer.save()
 
 
@@ -134,7 +135,7 @@ class Command(BaseCommand):
 
         parser.print_summary()
 
-        print 'Checking imports ...'
+        print 'Checking questions ...'
         parser.check()
 
         print 'Saving questions, answers and levels ...'
