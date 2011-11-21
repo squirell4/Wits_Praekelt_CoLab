@@ -150,6 +150,12 @@ class GameState(object):
             self.game.winner = None
         self.game.save()
 
+    def colour_used(self, colour):
+        pks = [int(pk) for pk in self['players']]
+        used_colours = set(Player.objects.filter(pk__in=pks)\
+                                         .values_list('colour', flat=True))
+        return colour in used_colours
+
     def add_player(self, player):
         defaults = copy.deepcopy(self.PLAYER_STATE_START)
         player_pk = self._pk(player)
