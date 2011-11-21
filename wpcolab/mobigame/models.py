@@ -111,6 +111,10 @@ class GameState(object):
 
     LAST_LEVEL = 3
     NUM_PLAYERS = 4
+    ROUND_LIMITS = {
+        1: 3,  # at most 3 go through from round 1
+        2: 2,  # at most 2 go through from round 2
+        }
     GAME_STATE_START = {
         'players': {},
         # players that successfully answered all rounds
@@ -209,8 +213,10 @@ class GameState(object):
         elif level_no == self.LAST_LEVEL:
             self['winners'].append(self._pk(player))
             self.eliminate_player(player)
-
-        # TODO: eliminate last player to answer correctly
+        elif level_no in self.ROUND_LIMITS:
+            limit = self.ROUND_LIMITS[level_no]
+            if self.players_at_level(level_no + 1) >= limit:
+                self.eliminate_player(player)
 
     def current_question(self, player):
         """Return the question for the current level, creating one
@@ -227,6 +233,10 @@ class GameState(object):
             question = level.random_question()
             questions[level_key] = [question.pk, None]
         return question
+
+    def players_at_level(self, level_no):
+        all_levels = [p['level'] for p in self['players'].values()]
+        return len(level for level in all_levels if level == level_no)
 
     def player_ahead(self, player):
         player_level = self['players'][self._pk(player)]['level']
