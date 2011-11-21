@@ -12,6 +12,8 @@ from mobigame.models import Game, Player
 # Forms
 
 class LoginForm(ModelForm):
+    error_css_class = 'formerror'
+
     class Meta:
         model = Player
         fields = ('first_name', 'colour')
@@ -48,11 +50,17 @@ def login(request):
     if request.method == 'POST':
         login_form = LoginForm(request.POST)
         if login_form.is_valid():
-            player = login_form.save()
-            gamestate.add_player(player)
-            gamestate.save()
-            request.session['player'] = player
-            return redirect('mobigame:play')
+            colour = login_form.cleaned_data['colour']
+            if not gamestate.colour_used(colour):
+                player, _created = Player.objects.get_or_create(
+                                        **login_form.cleaned_data)
+                gamestate.add_player(player)
+                gamestate.save()
+                request.session['player'] = player
+                return redirect('mobigame:play')
+            else:
+                login_form.errors['colour'].append('%s already taken!' %
+                                                   colour.title())
     else:
         login_form = LoginForm()
 
