@@ -95,9 +95,12 @@ class Game(models.Model):
 
     @classmethod
     def previous_winners(cls, limit=10):
-        previous_games = list(cls.objects.filter(winner__isnull=False)\
-                                .order_by('-last_access')[:limit])
-        previous_winners = [game.winner for game in previous_games]
+        previous_winner_pks = list(cls.objects.filter(winner__isnull=False)\
+                                .order_by('-last_access')\
+                                .values_list('winner', flat=True)\
+                                .distinct()[:limit])
+        previous_winners = [Player.objects.get(pk=pk)
+                            for pk in previous_winner_pks]
         return previous_winners
 
     def get_state(self):
