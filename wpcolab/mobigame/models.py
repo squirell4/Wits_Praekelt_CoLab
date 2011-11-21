@@ -73,7 +73,7 @@ class Game(models.Model):
         return u"Game %s (complete: %s)" % (self.pk, self.complete)
 
     @classmethod
-    def current_game(cls):
+    def current_game(cls, create=True):
         """Return the currently active (incomplete) game or create one."""
         uncompleted = list(cls.objects.filter(complete=False)\
                            .order_by('last_access').all())
@@ -89,6 +89,8 @@ class Game(models.Model):
                 current.save()
             else:
                 return current
+        if not create:
+            return None
         return cls.objects.create(complete=False, last_access=now)
 
     def get_state(self):

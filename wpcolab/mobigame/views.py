@@ -152,7 +152,10 @@ def play(game, gamestate, player, request):
 # API
 
 def api_v1(request):
-    game = Game.current_game()
-    gamestate = game.get_state()
-    text = gamestate.api_v1_state()
+    game = Game.current_game(create=False)
+    if game is None:
+        text = "0"
+    else:
+        gamestate = game.get_state()
+        text = gamestate.api_v1_state()
     return HttpResponse(text, mimetype="text/plain")
