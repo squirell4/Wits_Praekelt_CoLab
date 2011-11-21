@@ -85,6 +85,7 @@ def scores(request):
     current_winner = winners[0] if winners else None
     previous_winners = winners[1:]
     context = {
+        'colour_style': Player.NO_PLAYER_STYLE,
         'current_winner': current_winner,
         'previous_winners': previous_winners,
         }

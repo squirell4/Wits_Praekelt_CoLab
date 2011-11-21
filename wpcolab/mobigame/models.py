@@ -66,7 +66,7 @@ class Game(models.Model):
 
     complete = models.BooleanField()
     last_access = models.DateTimeField(auto_now=True)
-    state = models.TextField()
+    state = models.TextField(blank=True)
     winner = models.ForeignKey(Player, null=True)
 
     def __unicode__(self):
@@ -95,8 +95,9 @@ class Game(models.Model):
 
     @classmethod
     def previous_winners(cls, limit=10):
-        previous_winners = list(cls.objects.filter(complete=True)\
+        previous_games = list(cls.objects.filter(winner__isnull=False)\
                                 .order_by('-last_access')[:limit])
+        previous_winners = [game.winner for game in previous_games]
         return previous_winners
 
     def get_state(self):
