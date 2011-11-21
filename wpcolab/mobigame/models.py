@@ -236,7 +236,7 @@ class GameState(object):
 
     def players_at_level(self, level_no):
         all_levels = [p['level'] for p in self['players'].values()]
-        return len(level for level in all_levels if level == level_no)
+        return len([level for level in all_levels if level == level_no])
 
     def player_ahead(self, player):
         player_level = self['players'][self._pk(player)]['level']
