@@ -117,9 +117,9 @@ def play(game, gamestate, player, request):
             context['winner_msg'] = \
                 WINNING_MSGS[player.colour]
             template = 'winner.html'
-        if gamestate.second(player):
+        elif gamestate.second(player):
             template = 'second.html'
-        if gamestate.eliminated(player):
+        elif gamestate.eliminated(player):
             template = 'eliminated.html'
             context['elimination_msg'] = \
                 random.choice(ELIMINATION_MSGS)
@@ -128,19 +128,18 @@ def play(game, gamestate, player, request):
     else:
         if not gamestate.full():
             template = 'findafriend.html'
-        elif not gamestate.players_synced():
-            gamestate.sync_player(player)
-            if gamestate.level_no() is None:
-                template = 'getready'
-            else:
-                template = 'madeit.html'
+        elif gamestate.level_no() == 0:
+            gamestate.seen_ready(player)
+            template = 'getready.html'
+        elif gamestate.player_ahead(player):
+            template = 'madeit.html'
         else:
             # ask a question!
             template = 'play.html'
             question = gamestate.current_question(player)
             [answer1, answer2] = question.answer_set.all()
             context.update({
-                'levelno': gamestate.level_no(),
+                'levelno': question.level.levelno,
                 'question': question,
                 'answer1': answer1,
                 'answer2': answer2,

@@ -80,12 +80,12 @@ class Game(models.Model):
         now = datetime.datetime.now()
         # expire old games
         for game in uncompleted[:-1]:
-            game.completed = True
+            game.complete = True
             game.save()
         if uncompleted:
             current = uncompleted[-1]
             if now - current.last_access > cls.MAX_AGE:
-                current.completed = True
+                current.complete = True
                 current.save()
             else:
                 return current
@@ -101,15 +101,14 @@ class GameState(object):
     NUM_PLAYERS = 4
     GAME_STATE_START = {
         'players': {},
-        'level': 0,
         # players that successfully answered all rounds
         'winners': [],
         # players that have been eliminated
         'eliminated': [],
         }
     PLAYER_STATE_START = {
-        'sync': None,  # last sync level
-        'questions': {},
+        'level': 0,  # last level answered
+        'questions': {},  # level -> question_pk, answer_pk
         }
 
     def __init__(self, game):
@@ -167,7 +166,7 @@ class GameState(object):
         """Answer for the current question."""
         player_state = self['players'][self._pk(player)]
         questions = player_state['questions']
-        level_no = self['level']
+        level_no = player_state['level']
         level_key = str(level_no)
         if level_key not in questions:
             return
@@ -180,18 +179,21 @@ class GameState(object):
             return
 
         questions[level_key] = [question_pk, answer_pk]
+        player_state['level'] = min(level_no + 1, self.LAST_LEVEL)
         if not answer.correct:
             self.eliminate_player(player)
         elif level_no == self.LAST_LEVEL:
             self['winners'].append(self._pk(player))
             self.eliminate_player(player)
 
+        # TODO: eliminate last player to answer correctly
+
     def current_question(self, player):
         """Return the question for the current level, creating one
         if needed."""
         player_state = self['players'][self._pk(player)]
         questions = player_state['questions']
-        level_no = self['level']
+        level_no = player_state['level']
         level_key = str(level_no)
         if level_key in questions:
             question_pk, _answer_pk = questions[level_key]
@@ -202,24 +204,20 @@ class GameState(object):
             questions[level_key] = [question.pk, None]
         return question
 
+    def player_ahead(self, player):
+        player_level = self['players'][self._pk(player)]['level']
+        all_levels = [p['level'] for p in self['players'].values()]
+        return any(player_level > level for level in all_levels)
+
+    def seen_ready(self, player):
+        self['players'][self._pk(player)]['level'] = 1
+
     def level_no(self):
         """Current round. None if round 1 hasn't started."""
-        return self['level']
-
-    def sync_player(self, player):
-        """Sync player at current level. Once all players
-        have synced, the level increased."""
-        level = self['level']
-        player_state = self['players'][self._pk(player)]
-        if player_state['sync'] != level:
-            player_state['sync'] = level
-            if self.players_synced():
-                self['level'] = min(level + 1, 3)
-
-    def players_synced(self):
-        player_syncs = [p['sync'] for p in self['players'].values()]
-        level = self['level']
-        return all(sync == level for sync in player_syncs)
+        all_levels = [p['level'] for p in self['players'].values()]
+        if not all_levels:
+            return 0
+        return min(all_levels)
 
     API_V1_ORDER = ["blue", "red", "green", "pink"]
     API_V1_ELIMINATED = ["abcd"]
@@ -237,7 +235,7 @@ class GameState(object):
             if self.winner(player):
                 api_values.append(self.API_V1_WINNER[player_idx])
                 continue
-            for level in range(min((player_state['sync'] or 0) + 1,
+            for level in range(min(player_state['level'] + 1,
                                    len(self.API_V1_LEVELS))):
                 api_values.append(self.API_V1_LEVELS[level][player_idx])
 
