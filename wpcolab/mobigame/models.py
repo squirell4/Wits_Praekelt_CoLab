@@ -93,6 +93,12 @@ class Game(models.Model):
             return None
         return cls.objects.create(complete=False, last_access=now)
 
+    @classmethod
+    def previous_winners(cls, limit=10):
+        previous_winners = list(cls.objects.filter(complete=True)\
+                                .order_by('-last_access')[:limit])
+        return previous_winners
+
     def get_state(self):
         return GameState(self)
 
@@ -132,6 +138,12 @@ class GameState(object):
     def save(self):
         self.game.state = json.dumps(self.data)
         self.game.complete = len(self['eliminated']) == self.NUM_PLAYERS
+        if self.data['winners']:
+            player_pk = int(self.data['winners'][0])
+            winner = Player.objects.get(pk=player_pk)
+            self.game.winner = winner
+        else:
+            self.game.winner = None
         self.game.save()
 
     def add_player(self, player):

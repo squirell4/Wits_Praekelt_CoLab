@@ -5,13 +5,19 @@
 <h3>Current Enlightened One!</h3>
 
 <div class="{{ colour_style }}">
-<br/>
-other ENLIGHTENED ONES:<br/>
-_ <br/>
-_<br/>
-_<br/>
-_<br/>
-_<br/>
+{% if current_winner %}
+  Current ENLIGHTENED ONE: {{ current_winner.first_name }}<br/>
+  Previous ENLIGHTENED ONES:<br/>
+  {% if previous_winners %}
+    {% for en_one in previous_winners %}
+      {{ en_one.first_name }}<br/>
+    {% endfor %}
+  {% else %}
+    No previous enlightened ones. :(<br/>
+  {% endif %}
+{% else %}
+  No enlightened ones. :(<br/>
+{% endif %}
 <br/>
 <a href="{% url mobigame:login %}"><button type="button">Play!</button></a>
 </div>

@@ -81,7 +81,13 @@ def signout(request):
 
 
 def scores(request):
-    context = {}
+    winners = Game.previous_winners(limit=10)
+    current_winner = winners[0] if winners else None
+    previous_winners = winners[1:]
+    context = {
+        'current_winner': current_winner,
+        'previous_winners': previous_winners,
+        }
     return render(request, 'scores.html', context)
 
 
