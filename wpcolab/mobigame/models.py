@@ -94,6 +94,16 @@ class Game(models.Model):
         return cls.objects.create(complete=False, last_access=now)
 
     @classmethod
+    def last_game(cls):
+        """Return the most recent game, completed or not."""
+        games = cls.objects.filter().order_by('-last_access')
+        last_game = list(games[:1])
+        if last_game:
+            print last_game[0].last_access
+            return last_game[0]
+        return None
+
+    @classmethod
     def previous_winners(cls, limit=10):
         previous_winner_pks = list(cls.objects.filter(winner__isnull=False)\
                                 .order_by('-last_access')\
@@ -274,11 +284,11 @@ class GameState(object):
         for player_pk, player_state in self['players'].items():
             player = Player.objects.get(pk=int(player_pk))
             player_idx = self.API_V1_ORDER.index(player.colour)
-            if player_pk in self['eliminated']:
-                api_values.append(self.API_V1_ELIMINATED[player_idx])
-                continue
             if self.winner(player):
                 api_values.append(self.API_V1_WINNER[player_idx])
+                continue
+            if player_pk in self['eliminated']:
+                api_values.append(self.API_V1_ELIMINATED[player_idx])
                 continue
             player_level = player_state['level']
             player_lit = (player_level > level)

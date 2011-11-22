@@ -170,7 +170,7 @@ def play(game, gamestate, player, request):
 # API
 
 def api_v1(request):
-    game = Game.current_game(create=False)
+    game = Game.last_game()
     if game is None:
         text = "0"
     else:
