@@ -6,17 +6,22 @@ Current Enlightened One!
 
 {% block content %}
 {% if current_winner %}
-  Current ENLIGHTENED ONE: {{ current_winner.first_name }}<br/>
-  Previous ENLIGHTENED ONES:<br/>
+  <h3>Current ENLIGHTENED ONE:</h3>
+    <ul>
+      <li><b>{{ current_winner.first_name|title }}</b> ({{ current_winner.colour }})</li>
+    </ul>
+  <h3>Previous ENLIGHTENED ONES:</h3>
   {% if previous_winners %}
+    <ul>
     {% for en_one in previous_winners %}
-      {{ en_one.first_name }}<br/>
+      <li><b>{{ en_one.first_name|title }}</b> ({{ en_one.colour }})</li>
     {% endfor %}
+    </ul>
   {% else %}
-    No previous enlightened ones. :(<br/>
+    <p>No previous enlightened ones. :(</p>
   {% endif %}
 {% else %}
-  No enlightened ones. :(<br/>
+  <p>No enlightened ones. :(</p>
 {% endif %}
 <br/>
 </div>
