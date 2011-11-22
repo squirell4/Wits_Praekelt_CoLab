@@ -6,7 +6,7 @@ Woo Hoo!
 
 {% block content %}
 <h3>You Made It!</h3>
-<h3>ROUND {{ level_no }}</h3>
+<h3>On to ROUND {{ gamestate.level_no }}!</h3>
 <a href="{% url mobigame:play %}"><button type="button">Continue</button></a>
 {% endblock %}
 
