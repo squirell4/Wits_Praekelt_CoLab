@@ -59,6 +59,7 @@ def login(request):
                 request.session['player'] = player
                 return redirect('mobigame:play')
             else:
+                login_form.errors.setdefault('colour', [])
                 login_form.errors['colour'].append('%s already taken!' %
                                                    colour.title())
     else:
