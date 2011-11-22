@@ -163,6 +163,7 @@ def play(game, gamestate, player, request):
                 })
 
     gamestate.save()
+    context['player_level'] = gamestate.player_level(player)
     return render(request, template, context)
 
 

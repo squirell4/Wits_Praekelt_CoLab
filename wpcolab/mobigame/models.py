@@ -256,6 +256,10 @@ class GameState(object):
             return 0
         return min(all_levels)
 
+    def player_level(self, player):
+        player_pk = self._pk(player)
+        return self['players'][player_pk]['level']
+
     API_V1_ORDER = ["blue", "red", "green", "pink"]
     API_V1_ELIMINATED = ["abcd"]
     API_V1_LEVELS = ["1234", "5678", "9xyz"]
