@@ -62,7 +62,7 @@ class Player(models.Model):
 class Game(models.Model):
     """A model of game state."""
 
-    MAX_AGE = datetime.timedelta(seconds=60)
+    MAX_AGE = datetime.timedelta(seconds=120)
 
     complete = models.BooleanField()
     last_access = models.DateTimeField(auto_now=True)
