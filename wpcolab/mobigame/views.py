@@ -121,6 +121,7 @@ def play(game, gamestate, player, request):
         'game': game,
         'gamestate': gamestate,
         'player': player,
+        'colour_style': player.colour_style,
         }
 
     if request.method == 'POST':
