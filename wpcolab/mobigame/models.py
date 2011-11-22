@@ -238,6 +238,9 @@ class GameState(object):
         all_levels = [p['level'] for p in self['players'].values()]
         return len([level for level in all_levels if level == level_no])
 
+    def players_synced(self):
+        return self.players_at_level(self.level_no()) == self.NUM_PLAYERS
+
     def player_ahead(self, player):
         player_level = self['players'][self._pk(player)]['level']
         all_levels = [p['level'] for p in self['players'].values()]
@@ -260,6 +263,10 @@ class GameState(object):
 
     def api_v1_state(self):
         api_values = []
+        level = self.level_no()
+        players_synced = self.players_synced()
+        if players_synced:
+            level = max(level - 1, 0)
         for player_pk, player_state in self['players'].items():
             player = Player.objects.get(pk=int(player_pk))
             player_idx = self.API_V1_ORDER.index(player.colour)
@@ -269,8 +276,10 @@ class GameState(object):
             if self.winner(player):
                 api_values.append(self.API_V1_WINNER[player_idx])
                 continue
-            for level in range(min(player_state['level'] + 1,
-                                   len(self.API_V1_LEVELS))):
+            player_level = player_state['level']
+            player_lit = (player_level > level)
+            print level, player_level, player_lit
+            if player_lit and level < len(self.API_V1_LEVELS):
                 api_values.append(self.API_V1_LEVELS[level][player_idx])
 
         if not api_values:
