@@ -261,9 +261,9 @@ class GameState(object):
         return self['players'][player_pk]['level']
 
     API_V1_ORDER = ["blue", "red", "green", "pink"]
-    API_V1_ELIMINATED = ["abcd"]
+    API_V1_ELIMINATED = "abcd"
     API_V1_LEVELS = ["1234", "5678", "9xyz"]
-    API_V1_WINNER = ["mnop"]
+    API_V1_WINNER = "mnop"
 
     def api_v1_state(self):
         api_values = []
