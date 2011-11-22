@@ -276,6 +276,17 @@ class GameState(object):
     API_V1_WINNER = "mnop"
 
     def api_v1_state(self):
+        # handle non-full game
+        if not self.full():
+            api_values = []
+            for player_pk in self['players']:
+                player = Player.objects.get(pk=int(player_pk))
+                player_idx = self.API_V1_ORDER.index(player.colour)
+                api_values.append(self.API_V1_LEVELS[0][player_idx])
+                if not api_values:
+                    return "0"
+                return "".join(api_values)
+
         api_values = []
         level = self.level_no()
         players_synced = self.players_synced()
