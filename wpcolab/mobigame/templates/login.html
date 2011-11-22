@@ -1,11 +1,11 @@
 {% extends "base.html"%}
 
+{% block title %}
+Enlightenment ;)
+{% endblock %}
+
 {% block content %}
-<h1>Enlightenment ;)</h1>
-<p>
-Play the game by entering your name!<br/>
-Become the ENLIGHTENED ONE
-</p>
+<p>Play the game by entering your name! Become the ENLIGHTENED ONE.</p>
 
 <form action="{% url mobigame:login %}" method="POST">
 <div class="{{ colour_style }}">
@@ -14,4 +14,8 @@ Become the ENLIGHTENED ONE
   <p><input type="submit" value="Submit" /></p>
 </div>
 </form>
+{% endblock %}
+
+{% block footer %}
+<a href="{% url mobigame:scores %}"><button type="button">Enlighted Ones</button></a>
 {% endblock %}

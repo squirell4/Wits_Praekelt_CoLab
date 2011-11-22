@@ -1,26 +1,18 @@
 {% extends "base.html"%}
 
+{% block title %}
+Find a Friend!
+{% endblock %}
+
 {% block content %}
-<h2>Find a Friend!</h2>
-<p>
-There are currently not<br/>
-enough friends logged into the game.<br/>
-<br/>
-Make sure there are three<br/>
-friends to play with, or try again later.<br/>
-</p>
+<p>There are currently not enough friends logged into the game.</p>
+<p>Make sure there are three friends to play with, or try again later.</p>
 
-<div class="{{ player.colour_style }}">
-{{ player.first_name }}<br/>
-<br/>
-{{ player.colour|upper }}<br/>
-<br/>
 <a href="{% url mobigame:play %}"><button type="button">Check</button></a><br/>
-check to see<br/>
-if there are now enough players<br/>
-<br/><br/>
-<a href="{% url mobigame:signout %}"><button type="button">Sign Out</button></a><br/>
-Leave the Game
-</div>
 
+<p>check to see if there are now enough players</p>
+{% endblock %}
+
+{% block footer %}
+<a href="{% url mobigame:signout %}"><button type="button">Sign out</button></a>
 {% endblock %}

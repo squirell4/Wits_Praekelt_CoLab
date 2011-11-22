@@ -1,16 +1,15 @@
 {% extends "base.html"%}
 
+{% block title %}
+Gr8 ;)
+{% endblock %}
+
 {% block content %}
-<h1>Gr8 ;)</h1>
-<p>Get Ready2 Play!</p>
-
-<div class="{{ player.colour_style }}">
-LEVEL#1<br/>
-<br/>
-User Name: {{ player.first_name }}<br/>
-<br/>
-<br/>
+<h3>Get Ready2 Play!</h3>
+<h3>ROUND {{ level_no }}</h3>
 <a href="{% url mobigame:play %}"><button type="button">Play</button></a>
-</div>
+{% endblock %}
 
+{% block footer %}
+<a href="{% url mobigame:signout %}"><button type="button">Sign out</button></a>
 {% endblock %}

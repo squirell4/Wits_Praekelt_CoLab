@@ -7,7 +7,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body>
+    <div class="title {{colour_style}}">
+    <h1>
+    {% block title %}
+    {% endblock %}
+    </h1>
+    </div>
+    {% if player %}
+      <div class="playerinfo {{colour_style}}">
+      {{ player.first_name|title }} ({{ player.colour|lower }})
+      </div>
+    {% endif %}
+    <div class="content {{colour_style}}">
     {% block content %}
     {% endblock %}
+    </div>
+    <div class="footer {{colour_style}}">
+    {% block footer %}
+    {% endblock %}
+    </div>
 </body>
 </html>

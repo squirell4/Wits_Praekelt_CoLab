@@ -1,20 +1,23 @@
 {% extends "base.html"%}
 
+{% block title %}
+ROUND {{ levelno }}
+{% endblock %}
+
 {% block content %}
-<h2>ROUND {{ levelno }}</h2>
 <p>Select & sumbit the correct ANSWER</p>
-<div class="{{ player.colour_style }}">Question: {{ question }}</div>
+
+<h3>Question: {{ question }}</h3>
 
 <form action="{% url mobigame:play %}" method="POST">
 {% csrf_token %}
-<div class="{{ player.colour_style }}">
-<input name="answer" type="radio" value="{{ answer1.pk }}" />A: {{ answer1.text }}<br />
-<br/>
-OR<br/>
-<br/>
-<input type="radio" name="answer" value="{{ answer2.pk }}" />B: {{ answer2.text }}<br />
-</div>
-
-<div class="{{ player.colour_style }}"><input type="submit" value="Submit" /></div>
+<p><input name="answer" type="radio" value="{{ answer1.pk }}" />A: {{ answer1.text }}</p>
+<p>OR</p>
+<p><input type="radio" name="answer" value="{{ answer2.pk }}" />B: {{ answer2.text }}</p>
+<p><input type="submit" value="Submit" /></p>
 </form>
+{% endblock %}
+
+{% block footer %}
+<a href="{% url mobigame:signout %}"><button type="button">Sign out</button></a>
 {% endblock %}

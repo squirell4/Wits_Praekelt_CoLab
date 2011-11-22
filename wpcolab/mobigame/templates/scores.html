@@ -1,10 +1,10 @@
 {% extends "base.html"%}
 
-{% block content %}
-<h1>{{ player.first_name|upper }} ;)</h1>
-<h3>Current Enlightened One!</h3>
+{% block title %}
+Current Enlightened One!
+{% endblock %}
 
-<div class="{{ colour_style }}">
+{% block content %}
 {% if current_winner %}
   Current ENLIGHTENED ONE: {{ current_winner.first_name }}<br/>
   Previous ENLIGHTENED ONES:<br/>
@@ -19,6 +19,9 @@
   No enlightened ones. :(<br/>
 {% endif %}
 <br/>
-<a href="{% url mobigame:login %}"><button type="button">Play!</button></a>
 </div>
+{% endblock %}
+
+{% block footer %}
+<a href="{% url mobigame:login %}"><button type="button">Play!</button></a>
 {% endblock %}

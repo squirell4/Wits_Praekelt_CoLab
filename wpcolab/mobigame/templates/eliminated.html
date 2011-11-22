@@ -1,19 +1,18 @@
 {% extends "base.html"%}
 
+{% block title %}
+Eish!
+{% endblock %}
+
 {% block content %}
-<h1>Eish!</h1>
-<h3>{{ elimination_msg }}</h3>
+<p>{{ elimination_msg }}</p>
 <p>You have Been ELIMINATED!</p>
 
-<div class="{{ player.colour_style }}">LEVEL#{{ game.level.levelno }}<br/>
-<br/>
-{{ player.first_name }}<br/>
-<br/>
-
 <a href="{% url mobigame:scores %}"><button type="button">Enlighted Ones</button></a><br/>
-<br/>
-<br/>
-<a href="{% url mobigame:signout %}"><button type="button">Sign Out</button></a>
-</div>
+<p>See a list of the enlightened</p>
+{% endblock %}
 
+{% block footer %}
+<a href="{% url mobigame:login %}"><button type="button">Play!</button></a>
+<a href="{% url mobigame:scores %}"><button type="button">Enlighted Ones</button></a><br/>
 {% endblock %}

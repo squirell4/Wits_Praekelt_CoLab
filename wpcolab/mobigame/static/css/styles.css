@@ -1,8 +1,38 @@
-body {background-color:#FFF;}
+/* General */
 
-.formerror{border: 1px solid black; padding:5px;}
-.colorBarBlue{background-color:#3CF; padding:5px;}
-.colorBarRed{background-color:#F30; padding:5px;}
-.colorBarGreen{background-color:#0C0; padding:5px;}
-.colorBarPink{background-color:#F09; padding:5px;}
-.colorBarNoPlayer{background-color:#ACA; padding:5px;}
+body {
+    background-color: #FFF;
+}
+
+.formerror {
+    border: 1px solid black;
+    padding: 5px;
+}
+
+/* Main elements */
+
+.title, .player, .content, .footer {
+    padding: 3px;
+    border-top: 1px solid grey;
+    border-bottom: 1px solid grey;
+    margin-bottom: 3px;
+}
+
+.content {
+    padding-left: 10px;
+}
+
+/* Tweak HTML defaults */
+
+h1 {
+   padding: 3px;
+   margin: 3px;
+}
+
+/* Colour styles */
+
+.colorBarBlue { background-color:#3CF; }
+.colorBarRed { background-color:#F30; }
+.colorBarGreen { background-color:#0C0; }
+.colorBarPink { background-color:#F09; }
+.colorBarNoPlayer{ background-color:#ACA; }

@@ -1,23 +1,17 @@
 {% extends "base.html"%}
 
+{% block title %}
+WINNER! :)
+{% endblock %}
+
 {% block content %}
-
-<h2>WINNER! :)</h2>
-<br/>
-{{ winner_msg }}
-<br/>
-You are our current<br/>
-<br/>
-ENLIGHTENED ONE!
-<div class="{{ player.colour_style }}"> {{ player.colour|upper }}: {{ player.first_name|upper }}
-<br/>
-<br/>
+<p><b>{{ winner_msg }}</b></p>
+<p>You are our current ENLIGHTENED ONE!</p>
 <a href="{% url mobigame:scores %}"><button type="button">Enlighted Ones</button></a><br/>
-<br/>
-See a list of<br/>
-the enlightened<br/>
-<br/>
-<br/>
-</div>
+<p>See a list of the enlightened</p>
+{% endblock %}
 
+{% block footer %}
+<a href="{% url mobigame:login %}"><button type="button">Play!</button></a>
+<a href="{% url mobigame:scores %}"><button type="button">Enlighted Ones</button></a><br/>
 {% endblock %}

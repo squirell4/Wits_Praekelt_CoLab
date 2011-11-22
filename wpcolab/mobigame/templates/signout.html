@@ -1,9 +1,12 @@
 {% extends "base.html"%}
 
+{% block title %}
+Thank you ;)
+{% endblock %}
+
 {% block content %}
-<h2>Thank you ;)</h2>
 <p>
-Thanks for trying to play!<br/>
+Thanks for trying to play!</br>
 Try a little later<br/>
 &amp; become the<br/>
 ENLIGHTENED ONE
@@ -17,4 +20,9 @@ ENLIGHTENED ONE
   <input type="submit" value="Submit" />
 </div>
 </form>
+{% endblock %}
+
+{% block footer %}
+<a href="{% url mobigame:login %}"><button type="button">Play!</button></a>
+<a href="{% url mobigame:scores %}"><button type="button">Enlighted Ones</button></a>
 {% endblock %}
