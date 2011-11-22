@@ -245,23 +245,27 @@ class GameState(object):
         return question
 
     def players_at_level(self, level_no):
-        all_levels = [p['level'] for p in self['players'].values()]
+        all_levels = [p['level'] for k, p in self['players'].items()
+                      if k not in self['eliminated']]
         return len([level for level in all_levels if level == level_no])
 
     def players_synced(self):
-        return self.players_at_level(self.level_no()) == self.NUM_PLAYERS
+        return (self.players_at_level(self.level_no()) ==
+                (self.NUM_PLAYERS - len(self['eliminated'])))
 
     def player_ahead(self, player):
         player_level = self['players'][self._pk(player)]['level']
-        all_levels = [p['level'] for p in self['players'].values()]
+        all_levels = [p['level'] for p in self['players'].values()
+                      if p not in self['eliminated']]
         return any(player_level > level for level in all_levels)
 
     def seen_ready(self, player):
         self['players'][self._pk(player)]['level'] = 1
 
     def level_no(self):
-        """Current round. None if round 1 hasn't started."""
-        all_levels = [p['level'] for p in self['players'].values()]
+        """Current round. Zero if round 1 hasn't started."""
+        all_levels = [p['level'] for k, p in self['players'].items()
+                      if k not in self['eliminated']]
         if not all_levels:
             return 0
         return min(all_levels)
